@@ -29,6 +29,16 @@ class Post(db.Model):
     def __repr__(self):
         return '<Post {}>'.format(self.body)
 
+class Library(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    artist = db.Column(db.String(140))
+    album = db.Column(db.String(140))
+    track = db.Column(db.String(140))
+    filelocation = db.Column(db.String(140))
+
+    def __repr__(self):
+        return '<FileLocation {}>'.format(self.filelocation)
+
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))

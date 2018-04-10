@@ -1,5 +1,5 @@
 from flask import render_template, flash, redirect, url_for
-from app import app, db
+from app import app, db, vlcplayer
 from app.forms import LoginForm, RegistrationForm
 from flask_login import current_user, login_user
 from flask_login import login_required
@@ -7,6 +7,9 @@ from app.models import User
 from flask import request
 from werkzeug.urls import url_parse
 from flask_login import logout_user
+
+Player=vlcplayer.MusicPlayer('/home/pi/Downloads')
+Player.GetLibrary()
 
 @app.route('/')
 @app.route('/index')
@@ -70,3 +73,15 @@ def user(username):
         {'author': user, 'body': 'Test post #2'}
     ]
     return render_template('user.html', user=user, posts=posts)
+
+@app.route('/jukebox')
+def jukebox():
+    items=Player.CompiledLibrary
+    requests=Player.RequestLibrary
+    DisplayItems=[]
+    DisplayRequests=[]
+    for i in items:
+        DisplayItems.append(i.replace(Player.LibraryLocation + '\\',''))
+    for i in requests:
+        DisplayRequests.append(i.replace(Player.LibraryLocation + '\\',''))
+    return render_template('jukebox.html', title='Flask JukeBox!', items=DisplayItems, requests=DisplayRequests)

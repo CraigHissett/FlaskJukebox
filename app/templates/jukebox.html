@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+div.container {
+    width: 100%;
+    border: 1px solid gray;
+}
+header, footer {
+    padding: 1em;
+    color: black;
+    background-color: DodgerBlue;
+    clear: left;
+    text-align: center;
+}
+nav {
+    float: left;
+    max-width: 160px;
+    margin: 0;
+    padding: 1em;
+}
+nav ul {
+    list-style-type: none;
+    padding: 0;
+}
+   
+nav ul a {
+    text-decoration: none;
+}
+article {
+    margin-left: 170px;
+    border-left: 1px solid gray;
+    padding: 1em;
+    overflow: hidden;
+}
+</style>
+
+	 <script src="static/js/jquery-2.2.0.min.js"></script>
+  	 <script>
+    	$(document).ready(function() {
+	$("#myTable").on('click','.btnSelect',function(x){
+     // get the current row
+     var currentRow=$(this).closest("tr"); 
+     var col1=currentRow.find("td:eq(0)").text(); //1st TD
+     var data=col1;
+      $.post("", {"command":"Request", "value":col1}, 			function(data) {
+        //alert("after req post");
+        });
+      });
+	$("#inputfilter").keyup(function(){
+		filter = new RegExp($(this).val(),'i');
+		$("#myTable tbody tr").filter(function(){
+			$(this).each(function(){
+				found = false;
+				$(this).children().each(function(){
+					content = $(this).html();
+					if(content.match(filter))
+					{
+						found = true
+					}
+				});
+				if(!found)
+				{
+					$(this).hide();
+				}
+				else
+				{
+					$(this).show();
+				}
+			});
+		});
+	});
+});
+</script>
+
+</head>
+<body>
+
+<div class="container">
+
+<header>
+   <img src="static/images/WaM.jpg" alt="Flask Jukebox" height="160" width="220">
+   <h1>Flask Jukebox</h1>
+</header>
+  
+<nav>
+  <h3>Requested</h3>
+  <ul>
+  {% for request in requests %}
+	<li>{{ request }}</li>
+	<li>----------------</li>
+       {% endfor %}
+  </ul>
+</nav>
+
+<article>
+  <h2>Select your track:</h2>
+  <input type="text" style="border:1px solid #ff0000" id="inputfilter" placeholder="Type to search">	<br><br>
+
+     <table style="width:100%" border='1' id="myTable">
+	<tr>
+	<th>Artist/Album/Track</th>
+	<th>Select</th>
+     {% for item in items %}
+	<tr>
+	<td>{{ item }}</td>
+	<td><button class="btnSelect">Select</button></td>
+	</tr>
+       {% endfor %}
+	</table>
+
+</article>
+
+<footer>Copyright &copy; Craig Hissett</footer>
+
+</div>
+
+</body>
+</html>
