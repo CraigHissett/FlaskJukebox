@@ -29,16 +29,28 @@ class Post(db.Model):
     def __repr__(self):
         return '<Post {}>'.format(self.body)
 
-class Library(db.Model):
+class Tracks(db.Model):
+    #__tablename__ = 'tracl_lib'
     id = db.Column(db.Integer, primary_key=True)
     artist = db.Column(db.String(140))
     album = db.Column(db.String(140))
     track = db.Column(db.String(140))
     filelocation = db.Column(db.String(140))
+    requests = db.relationship('Requests', backref='artist', lazy='dynamic')
 
     def __repr__(self):
         return '<FileLocation {}>'.format(self.filelocation)
 
+class Requests(db.Model):
+    #__tablename__ = 'request_log'
+    id = db.Column(db.Integer, primary_key=True)
+    timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    track_id = db.Column(db.Integer, db.ForeignKey('tracks.id'))
+
+    def __repr__(self):
+        return '<id {}>'.format(self.id)
+    
 @login.user_loader
 def load_user(id):
     return User.query.get(int(id))
