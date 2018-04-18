@@ -74,8 +74,39 @@ def user(username):
     ]
     return render_template('user.html', user=user, posts=posts)
 
-@app.route('/jukebox')
+@app.route('/jukebox', methods=['GET', 'POST'])
 def jukebox():
+    if request.method == 'POST':
+        print('Post town')
+        WebCommand = self.get_argument ('command', '')
+        WebValue = self.get_argument ('value', '')
+        
+        if WebCommand == 'Pi':
+            if WebValue == 'Shutdown':
+                if sys.platform == 'win32':
+                    os.system('shutdown /s')
+                else:
+                    os.system('shutdown -h now')
+            elif WebValue == 'Reboot':
+                if sys.platform == 'win32':
+                    os.system('shutdown /r')
+                else:
+                    os.system('shutdown -r now')
+            else:
+                print('No matching Pi Command')
+                return
+        elif WebCommand == 'Arduino':
+            if WebValue == 'Reset':
+                slave = Aquarium(0)
+                slave.ResetSlave()
+            else:
+                print('No matching Arduino Command')
+                return
+        elif WebCommand == 'Request':
+            Player.AddRequest(Player.LibraryLocation + '\\' + WebValue)
+        else:
+            print('Command not recognised')
+
     items=Player.CompiledLibrary
     requests=Player.RequestLibrary
     DisplayItems=[]
