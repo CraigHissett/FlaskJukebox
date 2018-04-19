@@ -78,8 +78,8 @@ def user(username):
 def jukebox():
     if request.method == 'POST':
         print('Post town')
-        WebCommand = self.get_argument ('command', '')
-        WebValue = self.get_argument ('value', '')
+        WebCommand = request.form ['command']
+        WebValue = request.form ['value']
         
         if WebCommand == 'Pi':
             if WebValue == 'Shutdown':
