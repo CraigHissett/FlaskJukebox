@@ -7,9 +7,16 @@ from app.models import User
 from flask import request
 from werkzeug.urls import url_parse
 from flask_login import logout_user
+from datetime import datetime
 
 Player=vlcplayer.MusicPlayer('/home/pi/Downloads')
 Player.GetLibrary()
+
+@app.before_request
+def before_request():
+    if current_user.is_authenticated:
+        current_user.last_seen = datetime.utcnow()
+        db.session.commit()
 
 @app.route('/')
 @app.route('/index')

@@ -3,6 +3,7 @@ from datetime import datetime
 from app import db
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from hashlib import md5
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -10,6 +11,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(120), index=True, unique=True)
     password_hash = db.Column(db.String(128))
     posts = db.relationship('Post', backref='author', lazy='dynamic')
+    last_seen = db.Column(db.DateTime, default=datetime.utcnow)
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -19,6 +21,11 @@ class User(UserMixin, db.Model):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def avatar(self, size):
+        digest = md5(self.email.lower().encode('utf-8')).hexdigest()
+        return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, size)
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -30,7 +37,6 @@ class Post(db.Model):
         return '<Post {}>'.format(self.body)
 
 class Tracks(db.Model):
-    #__tablename__ = 'tracl_lib'
     id = db.Column(db.Integer, primary_key=True)
     artist = db.Column(db.String(140))
     album = db.Column(db.String(140))
@@ -42,7 +48,6 @@ class Tracks(db.Model):
         return '<FileLocation {}>'.format(self.filelocation)
 
 class Requests(db.Model):
-    #__tablename__ = 'request_log'
     id = db.Column(db.Integer, primary_key=True)
     timestamp = db.Column(db.DateTime, index=True, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
