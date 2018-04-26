@@ -8,9 +8,22 @@ from flask import request
 from werkzeug.urls import url_parse
 from flask_login import logout_user
 from datetime import datetime
+import threading
+
 
 Player=vlcplayer.MusicPlayer('/home/pi/Downloads')
 Player.GetLibrary()
+
+def background():
+    Player.Routine1()
+
+def foreground():
+    main_loop.start()
+
+b = threading.Thread(name='background', target=background)
+f = threading.Thread(name='foreground', target=foreground)
+b.start()
+#f.start()
 
 @app.before_request
 def before_request():
