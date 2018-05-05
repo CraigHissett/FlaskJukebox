@@ -41,7 +41,7 @@ class Tracks(db.Model):
     artist = db.Column(db.String(140))
     album = db.Column(db.String(140))
     track = db.Column(db.String(140))
-    filelocation = db.Column(db.String(140))
+    filelocation = db.Column(db.String(140), unique=True)
     requests = db.relationship('Requests', backref='artist', lazy='dynamic')
 
     def __repr__(self):

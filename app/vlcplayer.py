@@ -5,6 +5,8 @@ import random
 import os
 import fnmatch
 import csv
+from app import app, db
+from app.models import Tracks
 SpecifiedFolder = 'C:\\MusicSource'
 
 class MusicPlayer:
@@ -23,8 +25,17 @@ class MusicPlayer:
             for filename in filenames:
                 if fnmatch.fnmatch(filename, "*.mp3"):
                     self.CompiledLibrary.append(os.path.join(dirname, filename))
+                    self.AddToDB(os.path.join(dirname, filename))
                 elif fnmatch.fnmatch(filename, "*.wav"):
                     self.CompiledLibrary.append(os.path.join(dirname, filename))
+                    self.AddToDB(os.path.join(dirname, filename))
+
+    def AddToDB(self, FL):
+        tracks = Tracks(track="Test Track", filelocation=FL)
+        db.session.add(tracks)
+        db.session.commit()
+        print('Track Added!')
+
     def TrackTags(self):
         #for song in self.CompiledLibrary:
             #m = MP3(song, ID3=EasyID3)
@@ -37,7 +48,7 @@ class MusicPlayer:
         print('done')
     def AddRequest(self, Location):
         self.RequestLibrary.append(Location)
-        print('Request Added')
+        print('Request Added', Location)
     def PrintLibrary(self):
         for song in self.CompiledLibrary:
             print(song)

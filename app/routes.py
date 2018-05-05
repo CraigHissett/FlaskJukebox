@@ -123,7 +123,8 @@ def jukebox():
                 print('No matching Arduino Command')
                 return
         elif WebCommand == 'Request':
-            Player.AddRequest(Player.LibraryLocation + '\\' + WebValue)
+            #Player.AddRequest(Player.LibraryLocation + '\\' + WebValue)
+            Player.AddRequest(WebValue)
         else:
             print('Command not recognised')
 
